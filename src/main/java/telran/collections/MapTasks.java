@@ -1,6 +1,7 @@
 package telran.collections;
 
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -70,9 +71,22 @@ public class MapTasks {
         //1 -> <counter of occurrences>
         //2 -> <counter of occurrences>
         // ..............
+
+        new Random().ints(1_000_000, 0, Integer.MAX_VALUE )
+        .flatMap(n -> Integer.toString(n).chars()).boxed()
+        .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
+        .entrySet().stream().sorted(Entry.comparingByValue(Comparator.reverseOrder()))
+        .forEach(e -> System.out.printf("%c -> %d\n", e.getKey(), e.getValue()));
+       
+
+        
     }
     public static ParenthesesMaps getParenthesesMaps(Character[][] openCloseParentheses) {
-        //TODO
-        return null;
+        Map<Character, Character> openCloseMap = getMap(openCloseParentheses, ar -> ar[0], ar -> ar[1]);
+        Map<Character, Character> closeOpenMap = getMap(openCloseParentheses, ar -> ar[1], ar -> ar[0]);
+        return new ParenthesesMaps(openCloseMap, closeOpenMap);
+    }
+    private static Map<Character, Character> getMap(Character[][] openCloseParentheses, Function<Character[],Character> keyFn, Function<Character[],Character> valueFn) {
+        return Arrays.stream(openCloseParentheses).collect(Collectors.toMap(keyFn, valueFn));
     }
 }
