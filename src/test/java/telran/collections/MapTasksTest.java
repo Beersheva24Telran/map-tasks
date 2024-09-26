@@ -6,6 +6,18 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.*;
 public class MapTasksTest {
+  Integer[] numbers = {10, 5, 7, -4, 1};
+  LinkedHashMap<Integer, Integer> map ;
+  private void setUpMap(){
+    map = new LinkedHashMap<>(10, 0.75f, true) {
+        @Override
+        protected boolean removeEldestEntry(Map.Entry<Integer, Integer> eldestEntry){
+            return size() > numbers.length;
+        }
+        
+    };
+    Arrays.stream(numbers).forEach(n -> map.put(n, n * n));
+  }
   @Test
   void displayOccurrencesTest(){
     String[] strings = {"lpm", "ab", "a", "c", "cb", "cb", "c", "lpm", "lpm"} ;
@@ -53,5 +65,28 @@ public class MapTasksTest {
     assertEquals(']', openCloseMap.get('['));
     assertEquals('[', closeOpenMap.get(']'));
   }
+  //Tests of CW #32
+  @Test
+  void linkedHashMapTest() {
+    setUpMap();
+    assertArrayEquals(numbers, map.keySet().toArray(Integer[]::new));
+  }
+  @Test
+  void linkedHashMapWithPutTest() {
+    setUpMap();
+    map.put(3, 9);
+    Integer[] expected = {5, 7, -4, 1, 3};
+    assertArrayEquals(expected, map.keySet().toArray(Integer[]::new));
+  }
+  @Test
+  void linkedHashMapWithGetAndPutTest() {
+    setUpMap();
+    map.get(10); //10 will be moved at end
+    map.put(3, 9);
+    Integer[] expected = { 7, -4, 1, 10, 3};
+    assertArrayEquals(expected, map.keySet().toArray(Integer[]::new));
+  }
+
+
 
 }

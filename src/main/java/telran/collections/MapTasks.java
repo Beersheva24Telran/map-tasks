@@ -72,11 +72,11 @@ public class MapTasks {
         //2 -> <counter of occurrences>
         // ..............
 
-        new Random().ints(1_000_000, 0, Integer.MAX_VALUE )
-        .flatMap(n -> Integer.toString(n).chars()).boxed()
+        new Random().longs (1_000_000, 0, Integer.MAX_VALUE + 1l)
+        .flatMap(n -> Long.toString(n).chars().asLongStream()).boxed()
         .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
         .entrySet().stream().sorted(Entry.comparingByValue(Comparator.reverseOrder()))
-        .forEach(e -> System.out.printf("%c -> %d\n", e.getKey(), e.getValue()));
+        .forEach(e -> System.out.printf("%c -> %d\n", e.getKey().intValue(), e.getValue()));
        
 
         
